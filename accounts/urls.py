@@ -1,5 +1,12 @@
 from django.urls import path
-from accounts.views import registration_view, logout_view, login_view, account_view, getAuthor, change_password
+from accounts.views import registration_view, \
+    logout_view, \
+    login_view, \
+    account_view, \
+    getAuthor, \
+    change_password,\
+    post_create
+
 from django.contrib.auth import views as auth_views
 
 app_name = 'accounts'
@@ -12,6 +19,7 @@ urlpatterns = [
     path('logout/', logout_view, name='logout'),
     path('login/', login_view, name='login'),
     path('change-password/',change_password, name='change_password'),
+    path('post_create/', post_create, name='post_create'),
     # Accounts utils
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     # path('password_change/done/',

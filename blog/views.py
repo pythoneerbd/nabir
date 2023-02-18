@@ -5,6 +5,7 @@ from taggit.models import Tag
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count, Max
 
+
 # Create your views here.
 def index(request):
     # post = get_object_or_404(Post)
@@ -116,6 +117,22 @@ def article_category(request, id, slug):
     }
     return render(request,'blog/catagories-post.html', context)
 
+def search_posts(request):
+    all_post = Post.published_objects.all().order_by('-posted')
+    category = Category.objects.all()
+    query = request.GET.get("q")
+    if query:
+        all_post = all_post.filter(
+            Q(title__icontains=query) |
+            Q(body__icontains=query) |
+            Q(slug__icontains=query)
+        ).distinct()
+    context = {
+        'all_post' : all_post,
+        'category': category,
+    }
+    return render(request, 'blog/search_posts.html', context)
+
 def about_us(request):
     post = "Hello world"
     context = {
@@ -132,18 +149,3 @@ def contact_us(request):
     return render(request,'blog/contact.html', context)
 
 
-def search_posts(request):
-    all_post = Post.published_objects.all().order_by('-posted')
-    category = Category.objects.all()
-    query = request.GET.get("q")
-    if query:
-        all_post = all_post.filter(
-            Q(title__icontains=query) |
-            Q(body__icontains=query) |
-            Q(slug__icontains=query)
-        ).distinct()
-    context = {
-        'all_post' : all_post,
-        'category': category,
-    }
-    return render(request, 'blog/search_posts.html', context)

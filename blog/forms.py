@@ -3,6 +3,7 @@ from .models import Comment
 from mptt.forms import TreeNodeChoiceField
 
 
+
 class NewCommentForm(forms.ModelForm):
     parent = TreeNodeChoiceField(queryset=Comment.objects.all())
 

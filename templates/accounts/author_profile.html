@@ -35,7 +35,7 @@
                     </div>
                     {% empty %}
                     <h6>Hi {{ request.user.username }} you have no post! </h6>
-                    <p>You can make a post.<a href="#">Click here</a></p>
+                    <p>You can make a post.<a href="{% url 'accounts:post_create' %}">Click here</a></p>
                     {% endfor %}
                     <!-- ##### Pagination start ##### -->
                     {% if items.has_other_pages %}

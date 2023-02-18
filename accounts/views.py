@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.contrib.auth import login, authenticate, logout, get_user_model
 from django.contrib.auth.decorators import login_required
-from accounts.forms import RegistrationForm, AccountAuthenticateForm, AccountUpdateForm
+from accounts.forms import RegistrationForm, AccountAuthenticateForm, AccountUpdateForm, CreateForm
 from blog.models import Category
 from .models import Accounts
 from blog.models import Post
@@ -90,6 +90,19 @@ def account_view(request):
     return render(request, 'accounts/profile.html', context)
 
 
+def post_create(request):
+    category = Category.objects.all()
+    if request.user.is_authenticated:
+        u = get_object_or_404(Accounts, email=request.user.email)
+        form = CreateForm(request.POST or None, request.FILES or None)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.author = u
+            instance.save()
+            return redirect('blog:index')
+        return render(request, 'accounts/post_create.html', {"form": form,'category': category})
+    else:
+        return redirect('blog:index')
 
 @login_required()
 def getAuthor(request, username):

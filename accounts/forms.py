@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from accounts.models import Accounts
-
+from blog.models import Post
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(max_length=255, help_text='Required a valid email address')
@@ -57,3 +57,17 @@ class AccountUpdateForm(forms.ModelForm):
             except Accounts.DoesNotExist:
                 return username
             raise forms.ValidationError('Username: "%s" is not available to use.' % username)
+
+
+class CreateForm(forms.ModelForm):
+
+    class Meta:
+        model = Post
+        fields = [
+            'title',
+            'slug',
+            'body',
+            'image',
+            'category',
+            'tags',
+        ]
