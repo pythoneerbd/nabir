@@ -1,0 +1,425 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %} {{post.slug}} {% endblock %}
+
+{% block content %}
+
+<style>
+  @media screen and (min-width: 600px) {
+    .children form {
+      margin-left: -48px;
+      /* will touch very left side */
+    }
+
+    .children .children form {
+      margin-left: -96px;
+      /* will touch very left side */
+    }
+  }
+</style>
+<!-- ##### Blog Area Start ##### -->
+<div class="blog-area section-padding-0-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="blog-posts-area">
+
+                    <!-- Single Featured Post -->
+                    <div class="single-blog-post featured-post single-post">
+                        <div class="post-thumb">
+                            <a href="#"><img src="{{ post.image.url }}" alt=""></a>
+                        </div>
+                        <div class="post-data">
+                            <a href="{% url 'blog:article_category' id=post.id slug=post.slug %}" class="post-catagory">{{ post.category.name }}</a>
+                            <a href="#" class="post-title">
+                                <h6>{{ post.title }}</h6>
+                            </a>
+                            <div class="post-meta">
+                                <p class="post-date"><span>Published On: {{ post.posted|date:'d F Y' }}</span> | <span> {{ post.posted|date:'H:i A' }}</span></p>
+                                <p class="post-author" style="margin-top: -30px;">Posted By <a href="#">{{ post.author.auth_name }}</a></p>
+
+                                <p>{{ post.body|safe }}</p>
+
+                                <div class="newspaper-post-like d-flex align-items-center justify-content-between">
+                                    <!-- Tags -->
+                                    <div class="newspaper-tags d-flex">
+                                        <span>Tags:</span>
+                                        {% for tag in post.tags.all %}
+                                            <ul class="d-flex">
+                                                <li><a href="">{{ tag.name }}</a></li>
+                                                {% if not forloop.last %}, {% endif %}
+                                            </ul>
+                                        {% endfor %}
+                                    </div>
+
+                                    <!-- Post Like & Post Comment -->
+                                    <div class="d-flex align-items-center post-like--comments">
+                                        <a href="#" class="post-like"><img src="{% static 'img/core-img/like.png' %}" alt=""> <span>392</span></a>
+                                        <a href="#" class="post-comment"><img src="{% static 'img/core-img/chat.png' %}" alt="">
+                                           {% with allcomments.count as total_comments %}
+                                                <span>{{ total_comments }}</span>
+                                           {% endwith %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Author -->
+                    <div class="blog-post-author d-flex">
+                        <div class="author-thumbnail">
+                            <img src="{{ post.author.auth_image.url }}" alt="">
+                        </div>
+                        <div class="author-info">
+                            <a href="#" class="author-name"><span>The Author : {{ post.author.auth_name }}</span></a>
+                            <p>{{ post.author.auth_details }}</p>
+                        </div>
+                    </div>
+
+                    <div class="pager d-flex align-items-center justify-content-between">
+                        <div class="prev">
+                            <a href="{% url 'blog:single_article' id=post.id|add:'-1' %}" > previous{% if post.id > first.id %}   {% endif %}</a>
+                        </div>
+                        <div class="next">
+                            <a href="{% url 'blog:single_article' id=post.id|add:'1' %}">Next{% if post.id < last.id %}   {% endif %}     </a>
+                        </div>
+                    </div>
+
+                    <div class="section-heading">
+                        <h6>Related</h6>
+                    </div>
+
+                    <div class="row">
+                            <!-- Single Post -->
+                            {% for r in related %}
+                                <div class="col-12 col-md-6 col-lg-4" style="margin-top:-60px;">
+                                    <div class="single-blog-post style-3">
+                                        <div class="post-thumb">
+                                            <a href="{% url 'blog:single_article' id=r.id %}"><img src="{{ r.image.url }}" alt=""></a>
+                                        </div>
+                                        <div class="post-data">
+                                            <a href="{% url 'blog:single_article' id=r.id %}" class="post-title">
+                                                <h6>{{ r.title }}</h6>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <h6 class="title">No related post available</h6>
+                            {% endfor %}
+                        </div>
+
+                    <!-- Comment Area Start -->
+                    <div class="comment_area clearfix">
+                        {% with allcomments.count as total_comments %}
+                          <h5 class="title">
+                            {{ total_comments }} comment{{ total_comments|pluralize }}
+                          </h5>
+                        {% endwith %}
+<!--                        <h5 class="title">3 Comments</h5>-->
+                    <ol>
+                        <!-- Single Comment Area -->
+                        {% load mptt_tags %}
+                        {% recursetree comments %}
+                        <li class="single_comment_area">
+                            <!-- Comment Content -->
+                            <div id="{{ node.id }}" class="comment-content d-flex">
+                                <!-- Comment Author -->
+                                <div class="comment-author">
+                                    <img src="{% static 'img/profile_image.png' %}" alt="author">
+                                </div>
+                                <!-- Comment Meta -->
+                                <div class="comment-meta">
+                                    <a href="#" class="post-author">{{ node.name }}</a>
+                                    <a href="#" class="post-date">{{ node.publish|date:'F d, Y' }}</a>
+                                    <p>{{ node.content }}</p>
+                                    <hr />
+                                  {% if node.level < 3 %}
+                                    <button class="btn newspaper-btn" onclick="myFunction({{ node.id }})">Reply</button>
+                                  {% endif %}
+                                </div>
+
+                            </div>
+                            {% if not node.is_leaf_node %}
+                            <ol class="children">
+                                <li class="single_comment_area">
+                                    {{ children }}
+                                </li>
+                            </ol>
+                            {% endif %}
+                        </li>
+                        {% endrecursetree %}
+                    </ol>
+                    </div>
+                    <div class="py-4">
+                        <nav aria-label="Page navigation example">
+                          {% if comments.has_other_pages %}
+                          <ul class="pagination">
+                            {% if comments.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Prev</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
+                            {% endif %}
+                            {% for num in comments.paginator.page_range %}
+                            {% if comments.number == l %}
+                            <li class="page-item active"><span class="page-link">{{ num }} <span class="sr-only">(current)</span></span>
+                            </li>
+                            {% else %}
+                            <li><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if comments.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ comments.next_page_number }}">Next</a></li>
+                            {% else %}
+                            <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                            {% endif %}
+                          </ul>
+                          {% endif %}
+                        </nav>
+                      </div>
+                    <div class="post-a-comment-area section-padding-80-0">
+                        <h4>Leave a comment</h4>
+                        <!-- Reply Form -->
+                        <div id="myDIV" class="contact-form-area" style="display:block;">
+                            <form id="myForm" action="#" method="post">
+                                {% csrf_token %}
+                                {{ comment_form.as_p }}
+                                <div class="row">
+<!--                                    <div class="col-12 col-lg-6">-->
+<!--                                        <input type="text" class="form-control" id="name" placeholder="Name*">-->
+<!--                                    </div>-->
+<!--                                    <div class="col-12 col-lg-6">-->
+<!--                                        <input type="email" class="form-control" id="email" placeholder="Email*">-->
+<!--                                    </div>-->
+<!--                                    <div class="col-12">-->
+<!--                                        <input type="text" class="form-control" id="subject" placeholder="Website">-->
+<!--                                    </div>-->
+<!--                                    <div class="col-12">-->
+<!--                                        <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>-->
+<!--                                    </div>-->
+                                    <div class="col-12 text-center">
+                                        <button class="btn newspaper-btn mt-30 w-100 btn-block" type="submit">Submit Comment</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="blog-sidebar-area">
+                    <!-- Latest Posts Widget -->
+                    <div class="latest-posts-widget mb-50">
+                        <!-- Single Featured Post -->
+                        <div class="single-blog-post small-featured-post d-flex">
+                            <div class="post-thumb">
+                                <a href="#"><img src="{% static 'img/bg-img/19.jpg' %}" alt=""></a>
+                            </div>
+                            <div class="post-data">
+                                <a href="#" class="post-catagory">Finance</a>
+                                <div class="post-meta">
+                                    <a href="#" class="post-title">
+                                        <h6>Pellentesque mattis arcu massa, nec fringilla turpis eleifend id.</h6>
+                                    </a>
+                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Featured Post -->
+                        <div class="single-blog-post small-featured-post d-flex">
+                            <div class="post-thumb">
+                                <a href="#"><img src="{% static 'img/bg-img/20.jpg' %}" alt=""></a>
+                            </div>
+                            <div class="post-data">
+                                <a href="#" class="post-catagory">Politics</a>
+                                <div class="post-meta">
+                                    <a href="#" class="post-title">
+                                        <h6>Sed a elit euismod augue semper congue sit amet ac sapien.</h6>
+                                    </a>
+                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Featured Post -->
+                        <div class="single-blog-post small-featured-post d-flex">
+                            <div class="post-thumb">
+                                <a href="#"><img src="{% static 'img/bg-img/21.jpg' %}" alt=""></a>
+                            </div>
+                            <div class="post-data">
+                                <a href="#" class="post-catagory">Health</a>
+                                <div class="post-meta">
+                                    <a href="#" class="post-title">
+                                        <h6>Pellentesque mattis arcu massa, nec fringilla turpis eleifend id.</h6>
+                                    </a>
+                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Featured Post -->
+                        <div class="single-blog-post small-featured-post d-flex">
+                            <div class="post-thumb">
+                                <a href="#"><img src="{% static 'img/bg-img/22.jpg' %}" alt=""></a>
+                            </div>
+                            <div class="post-data">
+                                <a href="#" class="post-catagory">Finance</a>
+                                <div class="post-meta">
+                                    <a href="#" class="post-title">
+                                        <h6>Augue semper congue sit amet ac sapien. Fusce consequat.</h6>
+                                    </a>
+                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Featured Post -->
+                        <div class="single-blog-post small-featured-post d-flex">
+                            <div class="post-thumb">
+                                <a href="#"><img src="{% static 'img/bg-img/23.jpg' %}" alt=""></a>
+                            </div>
+                            <div class="post-data">
+                                <a href="#" class="post-catagory">Travel</a>
+                                <div class="post-meta">
+                                    <a href="#" class="post-title">
+                                        <h6>Pellentesque mattis arcu massa, nec fringilla turpis eleifend id.</h6>
+                                    </a>
+                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Single Featured Post -->
+                        <div class="single-blog-post small-featured-post d-flex">
+                            <div class="post-thumb">
+                                <a href="#"><img src="{% static 'img/bg-img/24.jpg' %}" alt=""></a>
+                            </div>
+                            <div class="post-data">
+                                <a href="#" class="post-catagory">Politics</a>
+                                <div class="post-meta">
+                                    <a href="#" class="post-title">
+                                        <h6>Augue semper congue sit amet ac sapien. Fusce consequat.</h6>
+                                    </a>
+                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Popular News Widget -->
+                    <div class="popular-news-widget mb-50">
+                        <h3>4 Most Popular News</h3>
+
+                        <!-- Single Popular Blog -->
+                        <div class="single-popular-post">
+                            <a href="#">
+                                <h6><span>1.</span> Amet, consectetur adipiscing elit. Nam eu metus sit amet odio sodales.</h6>
+                            </a>
+                            <p>April 14, 2018</p>
+                        </div>
+
+                        <!-- Single Popular Blog -->
+                        <div class="single-popular-post">
+                            <a href="#">
+                                <h6><span>2.</span> Consectetur adipiscing elit. Nam eu metus sit amet odio sodales placer.</h6>
+                            </a>
+                            <p>April 14, 2018</p>
+                        </div>
+
+                        <!-- Single Popular Blog -->
+                        <div class="single-popular-post">
+                            <a href="#">
+                                <h6><span>3.</span> Adipiscing elit. Nam eu metus sit amet odio sodales placer. Sed varius leo.</h6>
+                            </a>
+                            <p>April 14, 2018</p>
+                        </div>
+
+                        <!-- Single Popular Blog -->
+                        <div class="single-popular-post">
+                            <a href="#">
+                                <h6><span>4.</span> Eu metus sit amet odio sodales placer. Sed varius leo ac...</h6>
+                            </a>
+                            <p>April 14, 2018</p>
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Widget -->
+                    <div class="newsletter-widget mb-50">
+                        <h4>Newsletter</h4>
+                        <p>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                        <form action="#" method="post">
+                            <input type="text" name="text" placeholder="Name">
+                            <input type="email" name="email" placeholder="Email">
+                            <button type="submit" class="btn w-100">Subscribe</button>
+                        </form>
+                    </div>
+
+                    <!-- Latest Comments Widget -->
+                    <div class="latest-comments-widget">
+                        <h3>Latest Comments</h3>
+                        <hr />
+                        <!-- Single Comments -->
+                        {% for latest in allcomments|slice:":4"%}
+                        <div class="single-comments d-flex">
+                            <div class="comments-thumbnail mr-15">
+                                <img src="{% static 'img/profile_image.png' %}" alt="">
+                            </div>
+                            <div class="comments-text">
+                                <a href="#">{{ latest.name }} <span>on</span>
+                                    {{ latest.content|truncatewords:15|safe }}
+                                </a>
+                                <p>{{ latest.publish|date:'H:i A | d F Y'}}</p>
+                            </div>
+                        </div>
+                        <hr />
+                        {% empty %}
+                        <h6>This post has no comments as yet</h6>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ##### Blog Area End ##### -->
+<script>
+  function formExit() {
+    document.getElementById("newForm").remove();
+  }
+
+  function myFunction(id) {
+    if (document.contains(document.getElementById("newForm"))) {
+      document.getElementById("newForm").remove();
+    }
+
+    var d1 = document.getElementById(id);
+    d1.insertAdjacentHTML('afterend',
+      '<form id="newForm" class="form-insert py-2" method="post"> \
+                <div class="d-flex justify-content-between"><h2>Reply:</h2><div><button type="button" class="btn newspaper-btn" onclick="formExit()"">Close</button></div></div> \
+                <label for="id_name">Name:</label> \
+                <input type="text" name="name" class="col-sm-12" maxlength="50" required="" id="id_name">\
+                <select name="parent" class="d-none" id="id_parentt"> \
+                <option value="' + id + '" selected="' + id + '"></option> \
+                </select> \
+                <label for="id_email">Email:</label> \
+                <input type="text" name="email" class="col-sm-12" maxlength="254" required="" id="id_email"> \
+                <label for="id_content">Content:</label> \
+                <textarea name="content" cols="40" rows="5" class="form-control" required id="id_content"></textarea> \
+                {% csrf_token %} \
+                <button type="submit" class="btn newspaper-btn mt-30 w-100 btn-block">Submit</button> \
+              </form>');
+
+    //document.querySelector('#id_parentt [value="' + id + '"]').selected = true;
+  }
+
+  $('#myForm').trigger("reset");
+</script>
+{% endblock %}
+
+
+
