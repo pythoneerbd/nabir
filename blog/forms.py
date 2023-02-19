@@ -22,7 +22,7 @@ class NewCommentForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'col-sm-12'}),
             'email': forms.TextInput(attrs={'class': 'col-sm-12'}),
-            'content': forms.Textarea(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'style': 'background-color: white; border: solid 1px;'}),
         }
 
     def save(self, *args, **kwargs):

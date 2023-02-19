@@ -17,6 +17,10 @@
       /* will touch very left side */
     }
   }
+.my-textarea {
+  background-color: #f5f5f5;
+  /* change textarea color */
+}
 </style>
 <!-- ##### Blog Area Start ##### -->
 <div class="blog-area section-padding-0-80">
@@ -70,11 +74,11 @@
                     <!-- About Author -->
                     <div class="blog-post-author d-flex">
                         <div class="author-thumbnail">
-                            <img src="{{ post.author.auth_image.url }}" alt="">
+                            <img src="{{ post.author.image.url }}" alt="">
                         </div>
                         <div class="author-info">
-                            <a href="#" class="author-name"><span>The Author : {{ post.author.auth_name }}</span></a>
-                            <p>{{ post.author.auth_details }}</p>
+                            <a href="#" class="author-name"><span>The Author : {{ post.author.username }}</span></a>
+                            <p>{{ post.author.bio }}</p>
                         </div>
                     </div>
 

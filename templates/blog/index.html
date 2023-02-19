@@ -45,7 +45,7 @@
                                     <a href="{{ medium.get_absolute_url }}"><img src="{{medium.image.url}}" alt=""></a>
                                 </div>
                                 <div class="post-data">
-                                    <a href="{% url 'blog:article_category' id=medium.id slug=medium.slug %}" class="post-catagory">{{medium.category.name}}</a>
+                                    <a href="{% url 'blog:article_category' id=medium.id slug=medium.category.slug %}" class="post-catagory">{{medium.category.name}}</a>
                                     <div class="post-meta">
                                         <a href="{{ medium.get_absolute_url }}" class="post-title">
                                             <h6>{{medium.title}}</h6>
