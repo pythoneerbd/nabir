@@ -11,10 +11,26 @@ def index(request):
     # post = get_object_or_404(Post)
     category = Category.objects.all()
     breaking = Post.published_objects.all().order_by('-posted')[:6]
-    featured_big = Post.published_objects.filter().order_by('-posted')[0]       # query for latest post
+    try:
+        featured_big = Post.published_objects.filter().order_by('-posted')[0]       # query for latest post
+    except IndexError:
+        featured_big = None
     featured_medium = Post.published_objects.filter().order_by('-posted')[1:3]  # query for latest 2nd and 3rd post
     featured_small = Post.published_objects.filter().order_by('-posted')[3:8]  # query for latest third to 12th post
     most_popular = Post.published_objects.all().order_by('-views')[:4]          # query for 4 most viewed post
+    latest_post = Post.published_objects.filter().order_by('-posted')[0:6]  # SHOW latest posts
+    bangladesh_category = get_object_or_404(Category, name='Bangladesh')  # query for bangladesh category
+    bangladesh_post = Post.published_objects.all().filter(category=bangladesh_category).order_by('-posted')[:6]  # query for bangladesh categorys post
+    world_category = get_object_or_404(Category, name='Worlds')  # query for world category
+    world_post = Post.published_objects.all().filter(category=world_category).order_by('-posted')[:4]  # query for world category posts
+    technology_category = get_object_or_404(Category, name='Technology')  # query for tech category
+    technology_post = Post.published_objects.all().filter(category=technology_category).order_by('-posted')[:3]  # query for tech category posts
+    sports_category = get_object_or_404(Category, name='Sports')  # query for sports category
+    sports_post = Post.published_objects.all().filter(category=sports_category).order_by('-posted')[:3]  # query for sports category posts
+    editor_category = get_object_or_404(Category, name='Editors Pick')  # query for editors category
+    editor_post = Post.published_objects.all().filter(category=editor_category).order_by('-posted')[:6]  # query for editors category posts
+    entertain_category = get_object_or_404(Category, name='Entertainment')  # query for entertainment category
+    entertain_post = Post.published_objects.all().filter(category=entertain_category).order_by('-posted')[:3]
     videos = VideoPost.objects.filter().order_by('-posted')[:3]
     context = {
         'category': category,
@@ -25,6 +41,13 @@ def index(request):
         'featured_small': featured_small,
         'most_popular': most_popular,
         'videos': videos,
+        'latest_post': latest_post,
+        'bangladesh_post': bangladesh_post,
+        'world_post': world_post,
+        'technology_post': technology_post,
+        'sports_post': sports_post,
+        'editor_post': editor_post,
+        'entertain_post': entertain_post,
 
     }
     return render(request,'blog/index.html', context)
@@ -86,7 +109,10 @@ def article_category(request, id, slug):
     topic = get_object_or_404(Category, slug=slug)
     post = Post.published_objects.filter(category=topic.id)
     small_featured_category = Post.published_objects.filter(category=topic.id)[2:12]
-    featured_big = Post.published_objects.filter(category=topic.id)[0]
+    try:
+        featured_big = Post.published_objects.filter(category=topic.id)[0]
+    except IndexError:
+        featured_big = None
     featured_medium = Post.published_objects.filter(category=topic.id)[1:4]
     featured_small = Post.published_objects.filter(category=topic.id)[4:12]
     most_popular = Post.published_objects.filter(category=topic.id).order_by('-views')[:5]  # query for 4 most viewed post

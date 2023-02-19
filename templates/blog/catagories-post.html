@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-8">
                     <div class="row">
-
+                        {% if featured_big %}
                         <!-- Single Featured Post -->
                         <div class="col-12 col-lg-7">
                             <div class="single-blog-post featured-post">
@@ -31,7 +31,9 @@
                                 </div>
                             </div>
                         </div>
-
+                        {% else %}
+                            <h6>No Post available</h6>
+                        {% endif %}
                         <div class="col-12 col-lg-5">
                            {% for medium in featured_medium %}
                            <div class="single-blog-post style-2">
