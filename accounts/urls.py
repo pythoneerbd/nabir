@@ -5,7 +5,8 @@ from accounts.views import registration_view, \
     account_view, \
     getAuthor, \
     change_password,\
-    post_create
+    post_create,\
+    PostUpdate
 
 from django.contrib.auth import views as auth_views
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('change-password/',change_password, name='change_password'),
     path('post_create/', post_create, name='post_create'),
+    path('post_update/<int:id>', PostUpdate, name='post_update'),
     # Accounts utils
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     # path('password_change/done/',

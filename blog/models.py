@@ -8,7 +8,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
 from accounts.models import Accounts
-
+#For youtube video show
+from embed_video.fields import EmbedVideoField
 # Create your models here.
 
 class Category(MPTTModel):
@@ -81,3 +82,15 @@ class Comment(MPTTModel):
 
     def __str__(self):
         return self.name
+
+class VideoPost(models.Model):
+    title = models.CharField(max_length=100)
+    video = EmbedVideoField()
+    posted = models.DateTimeField(auto_now=False, auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=False)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-posted', ]

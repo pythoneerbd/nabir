@@ -89,7 +89,7 @@ def account_view(request):
     context['account_form'] = form
     return render(request, 'accounts/profile.html', context)
 
-
+@login_required
 def post_create(request):
     category = Category.objects.all()
     if request.user.is_authenticated:
@@ -103,6 +103,23 @@ def post_create(request):
         return render(request, 'accounts/post_create.html', {"form": form,'category': category})
     else:
         return redirect('blog:index')
+
+@login_required
+def PostUpdate(request, id):
+    category = Category.objects.all()
+    if request.user.is_authenticated:
+        u = get_object_or_404(Accounts, email=request.user.email)
+        post = get_object_or_404(Post, id=id)
+        form = CreateForm(request.POST or None, request.FILES or None, instance=post)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.author = u
+            instance.save()
+            messages.success(request, "Post updated successfully")
+            return redirect('accounts:author', username=u.username)
+        return render(request, 'accounts/post_create.html', {"form": form, 'category': category})
+    else:
+        return redirect('accounts:login')
 
 @login_required()
 def getAuthor(request, username):

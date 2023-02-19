@@ -1,8 +1,8 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin, MPTTModelAdmin
-from .models import Category, Post, Comment
+from .models import Category, Post, Comment, VideoPost
 from import_export.admin import ImportExportModelAdmin
-
+from embed_video.admin import AdminVideoMixin
 # Register your models here.
 admin.site.enable_nav_sidebar = False
 
@@ -31,3 +31,8 @@ class PostAdmin(ImportExportModelAdmin):
     pass
 
 admin.site.register(Comment, MPTTModelAdmin)
+
+class VideoPostModelAdmin(AdminVideoMixin, admin.ModelAdmin):
+    pass
+
+admin.site.register(VideoPost, VideoPostModelAdmin)

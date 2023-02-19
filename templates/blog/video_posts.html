@@ -1,0 +1,60 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block title %} all video posts {% endblock %}
+
+
+{% block content %}
+<div class="video-post-area bg-img bg-overlay" style="background-image: url({% static 'img/bg-img/bg1.jpg' %});">
+        <div class="container">
+            <div class="row justify-content-center">
+                {% load embed_video_tags %}
+                {% for item in items %}
+                <!-- Single Video Post -->
+                <div class="col-12 col-sm-6 col-md-4">
+                    <h4 style="color: red;">{{ item.title }}</h4>
+                    <div class="single-video-post">
+                        {% video item.video as my_video %}
+                            {% video my_video '100% x 100%' %}
+                        {% endvideo %}
+                    </div>
+                </div>
+                {% empty %}
+                <h4 style="color: white;">No embeded video link</h4>
+                {% endfor %}
+
+                <!-- ##### Pagination start ##### -->
+                {% if items.has_other_pages %}
+                <nav aria-label="Page navigation example" style="margin-top:-30px;">
+                    <ul class="pagination mt-50">
+                        {% if items.has_previous %}
+                        <li class="page-item active">
+                          <a class="page-link" href="?page={{ items.previous_page_number }}">Prev</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                          <a class="page-link"><span>Prev</span></a>
+                        </li>
+                        {% endif %}
+                        {% for i in page_range %}
+                            {% if items.number == i %}
+                              <li class="page-item active">
+                                <a class="page-link" href="#">{{i}}<span class="sr-only">(current)</span></a>
+                              </li>
+                          {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                          {% endif %}
+                        {% endfor %}
+                        {% if items.has_next %}
+                            <li class="page-item"><a class="page-link" aria-label="Next" href="?page={{items.next_page_number}}">Next</a></li>
+                        {% else %}
+                            <li class="page-item disabled"><a class="page-link"><span>Next</span></a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+         <!-- ##### Pagination end ##### -->
+            </div>
+    </div>
+</div>
+
+{% endblock %}

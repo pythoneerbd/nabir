@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404, redirect, Http404, HttpResponseRedirect
-from .models import Category, Post
+from .models import Category, Post, VideoPost
 from .forms import NewCommentForm
 from taggit.models import Tag
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -13,8 +13,9 @@ def index(request):
     breaking = Post.published_objects.all().order_by('-posted')[:6]
     featured_big = Post.published_objects.filter().order_by('-posted')[0]       # query for latest post
     featured_medium = Post.published_objects.filter().order_by('-posted')[1:3]  # query for latest 2nd and 3rd post
-    featured_small = Post.published_objects.filter().order_by('-posted')[3:11]  # query for latest third to 12th post
+    featured_small = Post.published_objects.filter().order_by('-posted')[3:8]  # query for latest third to 12th post
     most_popular = Post.published_objects.all().order_by('-views')[:4]          # query for 4 most viewed post
+    videos = VideoPost.objects.filter().order_by('-posted')[:3]
     context = {
         'category': category,
         # 'post': post,
@@ -23,6 +24,7 @@ def index(request):
         'featured_medium': featured_medium,
         'featured_small': featured_small,
         'most_popular': most_popular,
+        'videos': videos,
 
     }
     return render(request,'blog/index.html', context)
@@ -132,6 +134,31 @@ def search_posts(request):
         'category': category,
     }
     return render(request, 'blog/search_posts.html', context)
+
+
+def show_video(request):
+    category = Category.objects.all()
+    videos = VideoPost.objects.all()
+    paginator = Paginator(videos, 6)
+    page = request.GET.get('page')
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+    index = items.number - 1
+    max_index = len(paginator.page_range)
+    start_index = index - 2 if index >= 2 else 0
+    end_index = index + 2 if index <= max_index else max_index
+    page_range = paginator.page_range[start_index:end_index]
+    context = {
+        'videos': videos,
+        'category': category,
+        'page_range': page_range,
+        'items': items,
+    }
+    return render(request, 'blog/video_posts.html', context)
 
 def about_us(request):
     post = "Hello world"
