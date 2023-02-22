@@ -86,9 +86,11 @@
                         <div class="prev">
                             <a href="{% url 'blog:single_article' id=post.id|add:'-1' %}" > previous{% if post.id > first.id %}   {% endif %}</a>
                         </div>
+
                         <div class="next">
-                            <a href="{% url 'blog:single_article' id=post.id|add:'1' %}">Next{% if post.id < last.id %}   {% endif %}     </a>
+                            <a href="{% url 'blog:single_article' id=post.id|add:'1' %}">{% if post.id < last.id %} Next {% else %} no post {% endif %}     </a>
                         </div>
+
                     </div>
 
                     <div class="section-heading">
@@ -96,24 +98,24 @@
                     </div>
 
                     <div class="row">
-                            <!-- Single Post -->
-                            {% for r in related %}
-                                <div class="col-12 col-md-6 col-lg-4" style="margin-top:-60px;">
-                                    <div class="single-blog-post style-3">
-                                        <div class="post-thumb">
-                                            <a href="{% url 'blog:single_article' id=r.id %}"><img src="{{ r.image.url }}" alt=""></a>
-                                        </div>
-                                        <div class="post-data">
-                                            <a href="{% url 'blog:single_article' id=r.id %}" class="post-title">
-                                                <h6>{{ r.title }}</h6>
-                                            </a>
-                                        </div>
+                        <!-- Single Post -->
+                        {% for r in related %}
+                            <div class="col-12 col-md-6 col-lg-4" style="margin-top:-60px;">
+                                <div class="single-blog-post style-3">
+                                    <div class="post-thumb">
+                                        <a href="{% url 'blog:single_article' id=r.id %}"><img src="{{ r.image.url }}" alt=""></a>
+                                    </div>
+                                    <div class="post-data">
+                                        <a href="{% url 'blog:single_article' id=r.id %}" class="post-title">
+                                            <h6>{{ r.title }}</h6>
+                                        </a>
                                     </div>
                                 </div>
-                            {% empty %}
-                                <h6 class="title">No related post available</h6>
-                            {% endfor %}
-                        </div>
+                            </div>
+                        {% empty %}
+                            <h6 class="title">No related post available</h6>
+                        {% endfor %}
+                    </div>
 
                     <!-- Comment Area Start -->
                     <div class="comment_area clearfix">
@@ -192,18 +194,6 @@
                                 {% csrf_token %}
                                 {{ comment_form.as_p }}
                                 <div class="row">
-<!--                                    <div class="col-12 col-lg-6">-->
-<!--                                        <input type="text" class="form-control" id="name" placeholder="Name*">-->
-<!--                                    </div>-->
-<!--                                    <div class="col-12 col-lg-6">-->
-<!--                                        <input type="email" class="form-control" id="email" placeholder="Email*">-->
-<!--                                    </div>-->
-<!--                                    <div class="col-12">-->
-<!--                                        <input type="text" class="form-control" id="subject" placeholder="Website">-->
-<!--                                    </div>-->
-<!--                                    <div class="col-12">-->
-<!--                                        <textarea name="message" class="form-control" id="message" cols="30" rows="10" placeholder="Message"></textarea>-->
-<!--                                    </div>-->
                                     <div class="col-12 text-center">
                                         <button class="btn newspaper-btn mt-30 w-100 btn-block" type="submit">Submit Comment</button>
                                     </div>
@@ -218,138 +208,38 @@
                 <div class="blog-sidebar-area">
                     <!-- Latest Posts Widget -->
                     <div class="latest-posts-widget mb-50">
-                        <!-- Single Featured Post -->
+                        {% for recent in latest_post %}
+                        <!-- Recent Single Featured Post -->
                         <div class="single-blog-post small-featured-post d-flex">
                             <div class="post-thumb">
-                                <a href="#"><img src="{% static 'img/bg-img/19.jpg' %}" alt=""></a>
+                                <a href="{{ recent.get_absolute_url }}"><img src="{{ recent.image.url }}" alt=""></a>
                             </div>
                             <div class="post-data">
-                                <a href="#" class="post-catagory">Finance</a>
+                                <a href="/{{ recent.category.slug }}/{{ recent.category.id }}/" class="post-catagory">{{ recent.category.name }}</a>
                                 <div class="post-meta">
-                                    <a href="#" class="post-title">
-                                        <h6>Pellentesque mattis arcu massa, nec fringilla turpis eleifend id.</h6>
+                                    <a href="{{ recent.get_absolute_url }}" class="post-title">
+                                        <h6>{{ recent.title }}</h6>
                                     </a>
-                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
+                                    <p class="post-date"><span>{{ recent.posted|date:'H:i A' }}</span> | <span>{{ recent.posted|date:'F d, Y' }}</span></p>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Single Featured Post -->
-                        <div class="single-blog-post small-featured-post d-flex">
-                            <div class="post-thumb">
-                                <a href="#"><img src="{% static 'img/bg-img/20.jpg' %}" alt=""></a>
-                            </div>
-                            <div class="post-data">
-                                <a href="#" class="post-catagory">Politics</a>
-                                <div class="post-meta">
-                                    <a href="#" class="post-title">
-                                        <h6>Sed a elit euismod augue semper congue sit amet ac sapien.</h6>
-                                    </a>
-                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Single Featured Post -->
-                        <div class="single-blog-post small-featured-post d-flex">
-                            <div class="post-thumb">
-                                <a href="#"><img src="{% static 'img/bg-img/21.jpg' %}" alt=""></a>
-                            </div>
-                            <div class="post-data">
-                                <a href="#" class="post-catagory">Health</a>
-                                <div class="post-meta">
-                                    <a href="#" class="post-title">
-                                        <h6>Pellentesque mattis arcu massa, nec fringilla turpis eleifend id.</h6>
-                                    </a>
-                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Single Featured Post -->
-                        <div class="single-blog-post small-featured-post d-flex">
-                            <div class="post-thumb">
-                                <a href="#"><img src="{% static 'img/bg-img/22.jpg' %}" alt=""></a>
-                            </div>
-                            <div class="post-data">
-                                <a href="#" class="post-catagory">Finance</a>
-                                <div class="post-meta">
-                                    <a href="#" class="post-title">
-                                        <h6>Augue semper congue sit amet ac sapien. Fusce consequat.</h6>
-                                    </a>
-                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Single Featured Post -->
-                        <div class="single-blog-post small-featured-post d-flex">
-                            <div class="post-thumb">
-                                <a href="#"><img src="{% static 'img/bg-img/23.jpg' %}" alt=""></a>
-                            </div>
-                            <div class="post-data">
-                                <a href="#" class="post-catagory">Travel</a>
-                                <div class="post-meta">
-                                    <a href="#" class="post-title">
-                                        <h6>Pellentesque mattis arcu massa, nec fringilla turpis eleifend id.</h6>
-                                    </a>
-                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Single Featured Post -->
-                        <div class="single-blog-post small-featured-post d-flex">
-                            <div class="post-thumb">
-                                <a href="#"><img src="{% static 'img/bg-img/24.jpg' %}" alt=""></a>
-                            </div>
-                            <div class="post-data">
-                                <a href="#" class="post-catagory">Politics</a>
-                                <div class="post-meta">
-                                    <a href="#" class="post-title">
-                                        <h6>Augue semper congue sit amet ac sapien. Fusce consequat.</h6>
-                                    </a>
-                                    <p class="post-date"><span>7:00 AM</span> | <span>April 14</span></p>
-                                </div>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
-
                     <!-- Popular News Widget -->
-                    <div class="popular-news-widget mb-50">
+                    <div class="popular-news-widget mb-30">
                         <h3>4 Most Popular News</h3>
-
+                        {% for popular in most_popular %}
                         <!-- Single Popular Blog -->
                         <div class="single-popular-post">
-                            <a href="#">
-                                <h6><span>1.</span> Amet, consectetur adipiscing elit. Nam eu metus sit amet odio sodales.</h6>
+                            <a href="{{ popular.get_absolute_url }}">
+                                <h6><span>{{ forloop.counter }}</span>{{ popular.title }}</h6>
                             </a>
-                            <p>April 14, 2018</p>
+                            <p>{{ popular.posted|date:'F d, Y' }}</p>
                         </div>
-
-                        <!-- Single Popular Blog -->
-                        <div class="single-popular-post">
-                            <a href="#">
-                                <h6><span>2.</span> Consectetur adipiscing elit. Nam eu metus sit amet odio sodales placer.</h6>
-                            </a>
-                            <p>April 14, 2018</p>
-                        </div>
-
-                        <!-- Single Popular Blog -->
-                        <div class="single-popular-post">
-                            <a href="#">
-                                <h6><span>3.</span> Adipiscing elit. Nam eu metus sit amet odio sodales placer. Sed varius leo.</h6>
-                            </a>
-                            <p>April 14, 2018</p>
-                        </div>
-
-                        <!-- Single Popular Blog -->
-                        <div class="single-popular-post">
-                            <a href="#">
-                                <h6><span>4.</span> Eu metus sit amet odio sodales placer. Sed varius leo ac...</h6>
-                            </a>
-                            <p>April 14, 2018</p>
-                        </div>
+                        {% empty %}
+                        <h6>No post available </h6>
+                        {% endfor %}
                     </div>
 
                     <!-- Newsletter Widget -->

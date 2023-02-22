@@ -125,6 +125,8 @@ def PostUpdate(request, id):
 def getAuthor(request, username):
     user = get_object_or_404(Accounts, username=username)
     posts = Post.objects.filter(author=user)
+    small_posts = Post.objects.filter(author=user)[4:10]
+    most_popular = Post.published_objects.all().order_by('-views')[:4]  # query for 4 most viewed post
     paginator = Paginator(posts, 4)
     page = request.GET.get('page')
     try:
@@ -145,6 +147,8 @@ def getAuthor(request, username):
         'items': items,
         'page_range': page_range,
         'category': category,
+        'small_posts': small_posts,
+        'most_popular': most_popular,
     }
     return render(request,'accounts/author_profile.html', context)
 

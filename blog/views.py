@@ -15,8 +15,14 @@ def index(request):
         featured_big = Post.published_objects.filter().order_by('-posted')[0]       # query for latest post
     except IndexError:
         featured_big = None
-    featured_medium = Post.published_objects.filter().order_by('-posted')[1:3]  # query for latest 2nd and 3rd post
-    featured_small = Post.published_objects.filter().order_by('-posted')[3:8]  # query for latest third to 12th post
+    try:
+        featured_medium = Post.published_objects.filter().order_by('-posted')[1:3]  # query for latest 2nd and 3rd post
+    except IndexError:
+        featured_medium = None
+    try:
+        featured_small = Post.published_objects.filter().order_by('-posted')[3:8]  # query for latest third to 12th post
+    except Indexerror:
+        featured_small = None
     most_popular = Post.published_objects.all().order_by('-views')[:4]          # query for 4 most viewed post
     latest_post = Post.published_objects.filter().order_by('-posted')[0:6]  # SHOW latest posts
     bangladesh_category = get_object_or_404(Category, name='Bangladesh')  # query for bangladesh category
@@ -58,6 +64,8 @@ def single_article(request, id, tag_slug=None):
     first = Post.published_objects.first()
     last = Post.published_objects.last()
     related = Post.published_objects.filter(category=post.category).exclude(id=id)[:6]
+    latest_post = Post.published_objects.filter().order_by('-posted')[0:6]  # SHOW latest posts
+    most_popular = Post.published_objects.all().order_by('-views')[:4]  # query for 4 most viewed post
     tag = None
     if tag_slug:
         tag = get_object_or_404(Tag, slug=tag_slug)
@@ -100,6 +108,8 @@ def single_article(request, id, tag_slug=None):
         'comments': comments,
         'comment_form': comment_form,
         'allcomments': allcomments,
+        'latest_post': latest_post,
+        'most_popular': most_popular,
     }
     return render(request,'blog/single-post.html', context)
 

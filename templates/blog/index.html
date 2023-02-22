@@ -70,10 +70,10 @@
                     {% for small in featured_small %}
                     <div class="single-blog-post small-featured-post d-flex">
                         <div class="post-thumb">
-                            <a href="{{ small.get_absolute_url }}"><img src="{% static 'img/bg-img/19.jpg' %}" alt=""></a>
+                            <a href="{{ small.get_absolute_url }}"><img src="{{small.image.url}}" alt=""></a>
                         </div>
                         <div class="post-data">
-                            <a href="{% url 'blog:article_category' id=small.id slug=small.slug %}" class="post-catagory">{{small.category.name}}</a>
+                            <a href="{% url 'blog:article_category' id=small.id slug=small.category.slug %}" class="post-catagory">{{small.category.name}}</a>
                             <div class="post-meta">
                                 <a href="{{ small.get_absolute_url }}" class="post-title">
                                     <h6>{{small.title}}</h6>
