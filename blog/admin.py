@@ -4,7 +4,7 @@ from .models import Category, Post, Comment, VideoPost
 from import_export.admin import ImportExportModelAdmin
 from embed_video.admin import AdminVideoMixin
 # Register your models here.
-admin.site.enable_nav_sidebar = False
+#admin.site.enable_nav_sidebar = False
 
 
 admin.site.register(

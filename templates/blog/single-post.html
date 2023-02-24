@@ -32,16 +32,16 @@
                     <!-- Single Featured Post -->
                     <div class="single-blog-post featured-post single-post">
                         <div class="post-thumb">
-                            <a href="#"><img src="{{ post.image.url }}" alt=""></a>
+                            <img src="{{ post.image.url }}" alt="">
                         </div>
                         <div class="post-data">
-                            <a href="{% url 'blog:article_category' id=post.id slug=post.slug %}" class="post-catagory">{{ post.category.name }}</a>
-                            <a href="#" class="post-title">
-                                <h6>{{ post.title }}</h6>
-                            </a>
+                            <a href="/category/{{ post.category.slug }}/{{ post.category.id }}/" class="post-catagory">{{ post.category.name }}</a>
+
+                                <h1>{{ post.title }}</h1>
+
                             <div class="post-meta">
                                 <p class="post-date"><span>Published On: {{ post.posted|date:'d F Y' }}</span> | <span> {{ post.posted|date:'H:i A' }}</span></p>
-                                <p class="post-author" style="margin-top: -30px;">Posted By <a href="#">{{ post.author.auth_name }}</a></p>
+                                <p class="post-author" style="margin-top: -30px;">Posted By <a href="#">{{ post.author.name }}</a></p>
 
                                 <p>{{ post.body|safe }}</p>
 
@@ -215,7 +215,7 @@
                                 <a href="{{ recent.get_absolute_url }}"><img src="{{ recent.image.url }}" alt=""></a>
                             </div>
                             <div class="post-data">
-                                <a href="/{{ recent.category.slug }}/{{ recent.category.id }}/" class="post-catagory">{{ recent.category.name }}</a>
+                                <a href="/category/{{ recent.category.slug }}/{{ recent.category.id }}/" class="post-catagory">{{ recent.category.name }}</a>
                                 <div class="post-meta">
                                     <a href="{{ recent.get_absolute_url }}" class="post-title">
                                         <h6>{{ recent.title }}</h6>
