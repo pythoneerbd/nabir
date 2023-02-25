@@ -28,3 +28,9 @@ class NewCommentForm(forms.ModelForm):
     def save(self, *args, **kwargs):
         Comment.objects.rebuild()
         return super(NewCommentForm, self).save(*args, **kwargs)
+
+class ContactForm(forms.Form):
+    your_name = forms.CharField(label='Your Name', max_length=100, required=True)
+    your_email = forms.EmailField(required=True)
+    subject = forms.CharField(required=True)
+    message = forms.CharField(widget=forms.Textarea, required=True)

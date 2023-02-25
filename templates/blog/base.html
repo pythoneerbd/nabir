@@ -100,6 +100,8 @@
                                         {% endif %}
                                     </li>
                                     {% endrecursetree %}
+                                    <li><a href="{% url 'blog:about_us' %}">About us</a></li>
+                                    <li><a href="{% url 'blog:contact_us' %}">Contact us</a></li>
                                 </ul>
                                 {% if request.user.is_authenticated %}
                                 <div class="dropdown pmd-dropdown pmd-user-info ml-auto">
@@ -313,6 +315,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
     <script src="{% static 'js/plugins/plugins.js' %}"></script>
     <!-- Active js -->
     <script src="{% static 'js/active.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwuyLRa1uKNtbgx6xAJVmWy-zADgegA2s"></script>
+    <script src="js/google-map/map-active.js"></script>
 </body>
 
 </html>

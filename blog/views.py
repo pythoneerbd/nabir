@@ -1,10 +1,10 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404, redirect, Http404, HttpResponseRedirect
 from .models import Category, Post, VideoPost
-from .forms import NewCommentForm
+from .forms import NewCommentForm, ContactForm
 from taggit.models import Tag
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q, Count, Max
-
+from django.core.mail import send_mail, BadHeaderError #contact form mail send
 
 # Create your views here.
 def index(request):
@@ -191,10 +191,26 @@ def about_us(request):
 
 
 def contact_us(request):
-    post = "Hello world"
-    context = {
-        'post' : post,
-    }
-    return render(request,'blog/contact.html', context)
+    if request.method == 'GET':
+        form = ContactForm()
+    else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            your_name = form.cleaned_data['your_name']
+            your_email = form.cleaned_data['your_email']
+            message = form.cleaned_data['message']
+            try:
+                send_mail(
+                    subject=subject,
+                    message=message,
+                    from_email=your_email,
+                    recipient_list=['nabirhossain13@gmail.com'],
+                    fail_silently=False,
+                )
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return render(request, 'success.html')
+    return render(request, 'blog/contact.html', {'form': form})
 
 
