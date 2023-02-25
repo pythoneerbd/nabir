@@ -14,8 +14,7 @@ from django.conf import settings
 
 # Create your views here.
 def registration_view(request):
-    category = Category.objects.all()
-    context = {'category': category, }
+    context = {}
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -35,8 +34,7 @@ def registration_view(request):
 
 
 def login_view(request):
-    category = Category.objects.all()
-    context = {'category': category,}
+    context = {}
     if request.user.is_authenticated:
         return redirect('blog:index')
     if request.method == 'POST':
@@ -67,8 +65,7 @@ def logout_view(request):
 
 @login_required()
 def account_view(request):
-    category = Category.objects.all()
-    context = {'category': category, }
+    context = {}
     if request.POST:
         form = AccountUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
@@ -91,7 +88,6 @@ def account_view(request):
 
 @login_required
 def post_create(request):
-    category = Category.objects.all()
     if request.user.is_authenticated:
         u = get_object_or_404(Accounts, email=request.user.email)
         form = CreateForm(request.POST or None, request.FILES or None)
@@ -100,13 +96,12 @@ def post_create(request):
             instance.author = u
             instance.save()
             return redirect('blog:index')
-        return render(request, 'accounts/post_create.html', {"form": form,'category': category})
+        return render(request, 'accounts/post_create.html', {"form": form,})
     else:
         return redirect('blog:index')
 
 @login_required
 def PostUpdate(request, id):
-    category = Category.objects.all()
     if request.user.is_authenticated:
         u = get_object_or_404(Accounts, email=request.user.email)
         post = get_object_or_404(Post, id=id)
@@ -117,7 +112,7 @@ def PostUpdate(request, id):
             instance.save()
             messages.success(request, "Post updated successfully")
             return redirect('accounts:author', username=u.username)
-        return render(request, 'accounts/post_create.html', {"form": form, 'category': category})
+        return render(request, 'accounts/post_create.html', {"form": form,})
     else:
         return redirect('accounts:login')
 
@@ -140,20 +135,17 @@ def getAuthor(request, username):
     start_index = index - 4 if index >= 4 else 0
     end_index = index + 4 if index <= max_index else max_index
     page_range = paginator.page_range[start_index:end_index]
-    category = Category.objects.all()
     context = {
         'posts':posts,
         'author': user,
         'items': items,
         'page_range': page_range,
-        'category': category,
         'small_posts': small_posts,
         'most_popular': most_popular,
     }
     return render(request,'accounts/author_profile.html', context)
 
 def change_password(request):
-    category = Category.objects.all()
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -167,5 +159,4 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'accounts/change_password.html', {
         'form': form,
-        'category': category,
     })

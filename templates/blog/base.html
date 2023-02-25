@@ -37,17 +37,12 @@
                             <!-- Login Search Area -->
                             <div class="login-search-area d-flex align-items-center">
                                 {% if request.user.is_authenticated %}
-                                <!-- Login -->
+                                <!-- Logout -->
                                 <div class="login d-flex">
-                                    <a href="{% url 'accounts:profile' %}">update profile</a>
                                     <a href="{% url 'accounts:logout' %}">Logout</a>
-                                    <a href="{% url 'accounts:author' username=user.username%}">
-                                         <img src="{{ request.user.image.url }}"  alt="" style="height:30px; width:30px; border-radius: 50%;">
-                                    </a>
-
                                 </div>
                                 {% else %}
-                                 <!-- Logout -->
+                                 <!-- Login register -->
                                 <div class="login d-flex">
                                     <a href="{% url 'accounts:login' %}">Login</a>
                                     <a href="{% url 'accounts:register' %}">Register</a>
@@ -96,7 +91,7 @@
                                 {% load mptt_tags %}
                                 <ul>
                                     <li class="active"><a href="{% url 'blog:index' %}">Home</a></li>
-                                    {% recursetree category %}
+                                    {% recursetree kategorie %}
                                     <li><a href="{% url 'blog:article_category' id=node.id slug=node.slug %}">{{ node.name }}</a>
                                         {% if not node.is_leaf_node %}
                                         <ul class="dropdown">
@@ -106,6 +101,20 @@
                                     </li>
                                     {% endrecursetree %}
                                 </ul>
+                                {% if request.user.is_authenticated %}
+                                <div class="dropdown pmd-dropdown pmd-user-info ml-auto">
+                                    <a href="javascript:void(0);" class="btn-user dropdown-toggle media align-items-center" data-toggle="dropdown" data-sidebar="true" aria-expanded="false">
+                                        <img class="mr-2" src="{{ request.user.image.url }}" style="height:30px; width:30px; border-radius: 50%;" alt="avatar">
+                                        Nabir Hossain
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <a class="dropdown-item" href="{% url 'accounts:post_create' %}">Create Post</a>
+                                        <a class="dropdown-item" href="{% url 'accounts:author' username=user.username %}">Post Account</a>
+                                        <a class="dropdown-item" href="{% url 'accounts:profile' %}">Edit Profile</a>
+                                        <a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a>
+                                    </ul>
+                                </div>
+                                {% endif %}
                             </div>
                             <!-- Nav End -->
                         </div>

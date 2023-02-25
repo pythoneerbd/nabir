@@ -8,9 +8,6 @@ from django.db.models import Q, Count, Max
 
 # Create your views here.
 def index(request):
-    # post = get_object_or_404(Post)
-    category = Category.objects.all()
-    breaking = Post.published_objects.all().order_by('-posted')[:6]
     try:
         featured_big = Post.published_objects.filter().order_by('-posted')[0]       # query for latest post
     except IndexError:
@@ -39,9 +36,6 @@ def index(request):
     entertain_post = Post.published_objects.all().filter(category=entertain_category).order_by('-posted')[:3]
     videos = VideoPost.objects.filter().order_by('-posted')[:3]
     context = {
-        'category': category,
-        # 'post': post,
-        'breaking': breaking,
         'featured_big': featured_big,
         'featured_medium': featured_medium,
         'featured_small': featured_small,
@@ -60,7 +54,6 @@ def index(request):
 
 def single_article(request, id, tag_slug=None):
     post = get_object_or_404(Post, pk=id)
-    category = Category.objects.all()
     first = Post.published_objects.first()
     last = Post.published_objects.last()
     related = Post.published_objects.filter(category=post.category).exclude(id=id)[:6]
@@ -103,7 +96,6 @@ def single_article(request, id, tag_slug=None):
         'first': first,
         'last': last,
         'related': related,
-        'category': category,
         'comments': user_comment,
         'comments': comments,
         'comment_form': comment_form,
@@ -115,7 +107,6 @@ def single_article(request, id, tag_slug=None):
 
 def article_category(request, id, slug):
     post_cat = Post.objects.filter(category_id = id)
-    category = Category.objects.all()
     topic = get_object_or_404(Category, slug=slug)
     post = Post.published_objects.filter(category=topic.id)
     small_featured_category = Post.published_objects.filter(category=topic.id)[2:12]
@@ -145,7 +136,6 @@ def article_category(request, id, slug):
         'page_range': page_range,
         'items': items,
         'post': post,
-        'category': category,
         'small_featured_category': small_featured_category,
         'featured_big': featured_big,
         'featured_medium': featured_medium,
@@ -157,7 +147,6 @@ def article_category(request, id, slug):
 
 def search_posts(request):
     all_post = Post.published_objects.all().order_by('-posted')
-    category = Category.objects.all()
     query = request.GET.get("q")
     if query:
         all_post = all_post.filter(
@@ -167,13 +156,11 @@ def search_posts(request):
         ).distinct()
     context = {
         'all_post' : all_post,
-        'category': category,
     }
     return render(request, 'blog/search_posts.html', context)
 
 
 def show_video(request):
-    category = Category.objects.all()
     videos = VideoPost.objects.all()
     paginator = Paginator(videos, 6)
     page = request.GET.get('page')
@@ -190,7 +177,6 @@ def show_video(request):
     page_range = paginator.page_range[start_index:end_index]
     context = {
         'videos': videos,
-        'category': category,
         'page_range': page_range,
         'items': items,
     }
