@@ -107,7 +107,7 @@
                         <nav aria-label="Page navigation example" style="margin-top:-30px;">
                             <ul class="pagination mt-50">
                                 {% if items.has_previous %}
-                                <li class="page-item active">
+                                <li class="page-item">
                                   <a class="page-link" href="?page={{ items.previous_page_number }}">Prev</a>
                                 </li>
                                 {% else %}
@@ -141,7 +141,7 @@
                     </div>
                     <!-- Popular News Widget -->
                     <div class="popular-news-widget mb-30">
-                        <h3>4 Most Popular News</h3>
+                        <h3>{{most_popular.count}} Most Popular News</h3>
                         {% for popular in most_popular %}
                         <!-- Single Popular Blog -->
                         <div class="single-popular-post">

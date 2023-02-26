@@ -84,13 +84,15 @@
 
                     <div class="pager d-flex align-items-center justify-content-between">
                         <div class="prev">
-                            <a href="{% url 'blog:single_article' id=post.id|add:'-1' %}" > previous{% if post.id > first.id %}   {% endif %}</a>
+                            {% if previous_post %}
+                            <a href="{{ previous_post.get_absolute_url }}">Previous</a>
+                            {% endif %}
                         </div>
-
                         <div class="next">
-                            <a href="{% url 'blog:single_article' id=post.id|add:'1' %}">{% if post.id < last.id %} Next {% else %} no post {% endif %}     </a>
+                            {% if next_post %}
+                            <a href="{{ next_post.get_absolute_url }}">Next</a>
+                            {% endif %}
                         </div>
-
                     </div>
 
                     <div class="section-heading">
@@ -159,12 +161,14 @@
                         {% endrecursetree %}
                     </ol>
                     </div>
+                    <!-- comment pagination start -->
                     <div class="py-4">
                         <nav aria-label="Page navigation example">
                           {% if comments.has_other_pages %}
                           <ul class="pagination">
                             {% if comments.has_previous %}
-                            <li class="page-item"><a class="page-link" href="?page={{ comments.previous_page_number }}">Prev</a>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ comments.previous_page_number }}">Prev</a>
                             </li>
                             {% else %}
                             <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
@@ -186,6 +190,7 @@
                           {% endif %}
                         </nav>
                       </div>
+                    <!-- comment pagination end -->
                     <div class="post-a-comment-area section-padding-80-0">
                         <h4>Leave a comment</h4>
                         <!-- Reply Form -->
@@ -228,7 +233,7 @@
                     </div>
                     <!-- Popular News Widget -->
                     <div class="popular-news-widget mb-30">
-                        <h3>4 Most Popular News</h3>
+                        <h3>{{most_popular.count}} Most Popular News</h3>
                         {% for popular in most_popular %}
                         <!-- Single Popular Blog -->
                         <div class="single-popular-post">
@@ -245,9 +250,8 @@
                     <!-- Newsletter Widget -->
                     <div class="newsletter-widget mb-50">
                         <h4>Newsletter</h4>
-                        <p>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
-                        <form action="#" method="post">
-                            <input type="text" name="text" placeholder="Name">
+                        <p>Get the latest news delivered straight to your inbox, stay connected with our newsletter.</p>
+                        <form action="{% url 'newsletters:subscribe' %}" method="POST">{% csrf_token %}
                             <input type="email" name="email" placeholder="Email">
                             <button type="submit" class="btn w-100">Subscribe</button>
                         </form>

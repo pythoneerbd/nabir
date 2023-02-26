@@ -54,8 +54,8 @@ def index(request):
 
 def single_article(request, id, tag_slug=None):
     post = get_object_or_404(Post, pk=id)
-    first = Post.published_objects.first()
-    last = Post.published_objects.last()
+    previous_post = post.get_previous_post()
+    next_post = post.get_next_post()
     related = Post.published_objects.filter(category=post.category).exclude(id=id)[:6]
     latest_post = Post.published_objects.filter().order_by('-posted')[0:6]  # SHOW latest posts
     most_popular = Post.published_objects.all().order_by('-views')[:4]  # query for 4 most viewed post
@@ -93,8 +93,8 @@ def single_article(request, id, tag_slug=None):
     context = {
         'post' : post,
         'tag': tag,
-        'first': first,
-        'last': last,
+        'previous_post': previous_post,
+        'next_post': next_post,
         'related': related,
         'comments': user_comment,
         'comments': comments,
@@ -116,7 +116,7 @@ def article_category(request, id, slug):
         featured_big = None
     featured_medium = Post.published_objects.filter(category=topic.id)[1:4]
     featured_small = Post.published_objects.filter(category=topic.id)[4:12]
-    most_popular = Post.published_objects.filter(category=topic.id).order_by('-views')[:5]  # query for 4 most viewed post
+    most_popular = Post.published_objects.filter(category=topic.id).order_by('-views')[:4]  # query for 4 most viewed post
     latest_post = Post.published_objects.filter(category=topic.id).order_by('-posted')[0:5]  # SHOW latest posts
     paginator = Paginator(post, 9)
     page = request.GET.get('page')

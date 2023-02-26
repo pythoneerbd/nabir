@@ -57,6 +57,18 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('blog:single_article', args=[self.id])
 
+    def get_previous_post(self):
+        try:
+            return self.get_previous_by_posted()
+        except Post.DoesNotExist:
+            return None
+
+    def get_next_post(self):
+        try:
+            return self.get_next_by_posted()
+        except Post.DoesNotExist:
+            return None
+
     class Meta:
         ordering = ['-posted', ]
 
