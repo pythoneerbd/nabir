@@ -85,12 +85,16 @@
                     <div class="pager d-flex align-items-center justify-content-between">
                         <div class="prev">
                             {% if previous_post %}
-                            <a href="{{ previous_post.get_absolute_url }}">Previous</a>
+                                <a href="{{ previous_post.get_absolute_url }}">Previous</a>
+                            {% else %}
+                                <a class="disabled" style="pointer-events:none">Previous</a>
                             {% endif %}
                         </div>
                         <div class="next">
                             {% if next_post %}
-                            <a href="{{ next_post.get_absolute_url }}">Next</a>
+                                <a href="{{ next_post.get_absolute_url }}">Next</a>
+                            {% else %}
+                                <a class="disabled" style="pointer-events:none">Next</a>
                             {% endif %}
                         </div>
                     </div>
